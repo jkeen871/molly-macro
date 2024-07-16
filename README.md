@@ -80,36 +80,36 @@ To use the script, run the following command:
 
 - **With File Input**:
   ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "NextGen VDI - Brave" /path/to/textfile.txt
+  /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "vdi_window_title - Brave" /path/to/textfile.txt
   ```
 
 - **With Clipboard Input**:
   ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "NextGen VDI - Brave" -c
+  /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "vdi_window_title - Brave" -c
   ```
 
 #### Spreadsheet Mode
 
 - **With File Input**:
   ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "NextGen VDI - Brave" /path/to/spreadsheetfile.csv
+  /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "vdi_window_title - Brave" /path/to/spreadsheetfile.csv
   ```
 
 - **With Clipboard Input**:
   ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "NextGen VDI - Brave" -c
+  /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "vdi_window_title - Brave" -c
   ```
 
 #### Image Mode
 
 - **With File Input**:
   ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "NextGen VDI - Brave" /path/to/imagefile.png
+  /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "vdi_window_title - Brave" /path/to/imagefile.png
   ```
 
 - **With Clipboard Input**:
   ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "NextGen VDI - Brave" -c
+  /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "vdi_window_title - Brave" -c
   ```
 
 ## Developer Information

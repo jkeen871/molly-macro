@@ -36,32 +36,32 @@ Examples:
 1. Text Mode with File Input:
    Send the contents of a text file to the specified window.
    Command:
-   /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "NextGen VDI - Brave" /path/to/textfile.txt
+   /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "vdi_window_title - Brave" /path/to/textfile.txt
 
 2. Text Mode with Clipboard Input:
    Send the contents of the clipboard to the specified window.
    Command:
-   /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "NextGen VDI - Brave" -c
+   /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "vdi_window_title - Brave" -c
 
 3. Spreadsheet Mode with File Input:
    Send the contents of a CSV file to Excel in the specified window.
    Command:
-   /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "NextGen VDI - Brave" /path/to/spreadsheetfile.csv
+   /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "vdi_window_title - Brave" /path/to/spreadsheetfile.csv
 
 4. Spreadsheet Mode with Clipboard Input:
    Send the contents of the clipboard (tab-delimited) to Excel in the specified window.
    Command:
-   /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "NextGen VDI - Brave" -c
+   /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "vdi_window_title - Brave" -c
 
 5. Image Mode with File Input:
    Send the contents of an image file (encoded) to Notepad in the specified window.
    Command:
-   /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "NextGen VDI - Brave" /path/to/imagefile.png
+   /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "vdi_window_title - Brave" /path/to/imagefile.png
 
 6. Image Mode with Clipboard Input:
    Send the contents of the clipboard (encoded image) to Notepad in the specified window.
    Command:
-   /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "NextGen VDI - Brave" -c
+   /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "vdi_window_title - Brave" -c
 """)
     exit(1)
 
@@ -223,7 +223,7 @@ def main():
             exit(1)
 
     if not WINDOW_TITLE:
-        WINDOW_TITLE = "NextGen VDI - Brave"
+        WINDOW_TITLE = "vdi_window_title - Brave"
 
     WINDOW_ID = find_window_id(WINDOW_TITLE)
     if not WINDOW_ID:
