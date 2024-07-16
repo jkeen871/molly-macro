@@ -1,5 +1,3 @@
-### README.md
-
 # VDI Data Transfer Script
 
 ## Table of Contents
