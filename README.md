@@ -1,5 +1,3 @@
-Here is the updated `README.md` file with detailed instructions for configuring, using, and developing the VDI Data Transfer Script.
-
 ### Updated `README.md`
 
 ```markdown
