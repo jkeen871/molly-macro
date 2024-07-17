@@ -39,8 +39,8 @@ Environment variables (configured in .env file):
     CHUNK_SIZE
     DELAY_BETWEEN_CHUNKS
 
-Author: [Your Name]
-Date: [Current Date]
+Author: Jerry Keen
+Date: July 17, 2024
 Version: 1.0
 """
 

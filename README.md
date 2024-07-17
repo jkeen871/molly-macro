@@ -45,7 +45,8 @@ The VDI Data Transfer Script is designed to streamline the process of transferri
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/vdi-data-transfer.git
+   git clone https://github.com/jkeen871/paste_to_vdi.git
+
    cd vdi-data-transfer
    ```
 
@@ -165,4 +166,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Contact
 
-For support or inquiries, please open an issue on the GitHub repository or contact the maintainer at maintainer@example.com.
+For support or inquiries, please open an issue on the GitHub repository or contact the maintainer at jkeen871@gmail.com.
