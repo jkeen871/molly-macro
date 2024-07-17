@@ -1,77 +1,76 @@
-### Updated `README.md`
-
-```markdown
 # VDI Data Transfer Script
+
+A Python-based tool for automating data transfer to Virtual Desktop Infrastructure (VDI) environments.
 
 ## Table of Contents
 
-- [Introduction](#introduction)
+- [Overview](#overview)
 - [Features](#features)
+- [Requirements](#requirements)
 - [Installation](#installation)
-  - [Prerequisites](#prerequisites)
-  - [Setup](#setup)
 - [Usage](#usage)
   - [Command-Line Options](#command-line-options)
   - [Examples](#examples)
-    - [Text Mode](#text-mode)
-    - [Spreadsheet Mode](#spreadsheet-mode)
-    - [Image Mode](#image-mode)
-    - [Code Mode](#code-mode)
 - [Configuration](#configuration)
-- [Developer Information](#developer-information)
-  - [Setup and Installation](#setup-and-installation)
-  - [Explanation of Focus Requirement](#explanation-of-focus-requirement)
-  - [Platform Compatibility](#platform-compatibility)
-- [Potential Enhancements](#potential-enhancements)
-- [Contributing](#contributing)
+- [Developer Guide](#developer-guide)
+  - [Architecture](#architecture)
+  - [Key Components](#key-components)
+  - [Contributing](#contributing)
+- [Troubleshooting](#troubleshooting)
+- [License](#license)
+- [Contact](#contact)
 
-## Introduction
+## Overview
 
-The VDI Data Transfer Script is a Python-based tool designed to facilitate the transfer of data to a Virtual Desktop Infrastructure (VDI) environment. This script uses `xdotool` to interact with a specified window on a Linux system, sending text, spreadsheet data, images, or code from the local machine to the VDI. It automates repetitive tasks, ensures data consistency, and improves productivity.
+The VDI Data Transfer Script is designed to streamline the process of transferring data to a Virtual Desktop Infrastructure (VDI) environment. It uses `xdotool` to interact with specified windows on a Linux system, enabling automated input of text, spreadsheet data, images, or code from a local machine to the VDI.
 
 ## Features
 
-- **Text Mode**: Send text data to a target window.
-- **Spreadsheet Mode**: Send data in a comma-separated format to a target window, simulating spreadsheet entries.
-- **Image Mode**: Send image data to the target window by encoding it as text.
-- **Code Mode**: Send code data to Visual Studio Code.
-- **Clipboard Integration**: Use clipboard contents as input for text, spreadsheet, image, or code data.
-- **Debug Logging**: Provides detailed debug logs for troubleshooting and monitoring script execution.
+- **Multiple Transfer Modes**:
+  - Text Mode: Send plain text to a target window
+  - Spreadsheet Mode: Input data in a tabular format, simulating spreadsheet entries
+  - Image Mode: Transfer image data by encoding it as text
+  - Code Mode: Send code directly to Visual Studio Code
+- **Clipboard Integration**: Use clipboard contents as input for any mode
+- **Configurable Delays**: Customize timing between actions for optimal performance
+- **Debug Logging**: Detailed logs for troubleshooting and execution monitoring
+
+## Requirements
+
+- Python 3.6+
+- xdotool
+- Linux operating system
 
 ## Installation
 
-### Prerequisites
-
-Ensure you have Python 3 and `xdotool` installed on your system.
-
-```bash
-sudo apt-get install xdotool
-```
-
-### Setup
-
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/vdi-data-transfer.git
+   git clone https://github.com/yourusername/vdi-data-transfer.git
    cd vdi-data-transfer
    ```
 
-2. Set up a virtual environment:
+2. Install xdotool:
    ```bash
-   python3 -m venv vdi-env
-   source vdi-env/bin/activate
+   sudo apt-get install xdotool
    ```
 
-3. Install the required Python libraries:
+3. Set up a virtual environment:
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate
+   ```
+
+4. Install Python dependencies:
    ```bash
    pip install -r requirements.txt
    ```
 
 ## Usage
 
-To use the script, run the following command:
+Run the script using the following command:
+
 ```bash
-/usr/bin/python3 /path/to/paste_to_vdi.py [options] [path_to_file]
+python paste_to_vdi.py [OPTIONS] [FILE]
 ```
 
 ### Command-Line Options
@@ -80,69 +79,38 @@ To use the script, run the following command:
 - `-t`: Text editor mode
 - `-i`: Image transfer mode
 - `-e`: Code editor mode (Visual Studio Code)
-- `-w <window_title>`: Specify the title of the target window (optional)
-- `-c`: Use clipboard contents as input (no file needed)
+- `-w TITLE`: Specify window title (default: "vdi_window_title - Brave")
+- `-c`: Use clipboard contents as input
 - `-d`: Enable debug logging
-- `-h`: Display the help message
 
 ### Examples
 
-#### Text Mode
+1. Send text file contents:
+   ```bash
+   python paste_to_vdi.py -t document.txt
+   ```
 
-- **With File Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "vdi_window_title - Brave" /path/to/textfile.txt
-  ```
+2. Input spreadsheet data from clipboard:
+   ```bash
+   python paste_to_vdi.py -s -c
+   ```
 
-- **With Clipboard Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -t -w "vdi_window_title - Brave" -c
-  ```
+3. Transfer image with custom window title:
+   ```bash
+   python paste_to_vdi.py -i -w "My VDI Window" image.png
+   ```
 
-#### Spreadsheet Mode
-
-- **With File Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "vdi_window_title - Brave" /path/to/spreadsheetfile.csv
-  ```
-
-- **With Clipboard Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -s -w "vdi_window_title - Brave" -c
-  ```
-
-#### Image Mode
-
-- **With File Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "vdi_window_title - Brave" /path/to/imagefile.png
-  ```
-
-- **With Clipboard Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -i -w "vdi_window_title - Brave" -c
-  ```
-
-#### Code Mode
-
-- **With File Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -e -w "vdi_window_title - Brave" /path/to/codefile.py
-  ```
-
-- **With Clipboard Input**:
-  ```bash
-  /usr/bin/python3 /path/to/paste_to_vdi.py -e -w "vdi_window_title - Brave" -c
-  ```
+4. Send code to VS Code:
+   ```bash
+   python paste_to_vdi.py -e script.py
+   ```
 
 ## Configuration
 
-### .env File
-
-The `.env` file is used to configure various parameters for the script. Below is an example of a `.env` file:
+Create a `.env` file in the project root to customize script behavior:
 
 ```ini
-WINDOW_TITLE="vdi_window_title - Brave"
+WINDOW_TITLE=vdi_window_title - Brave
 DELAY_BETWEEN_KEYS=0.05
 DELAY_BETWEEN_COMMANDS=0.2
 DELAY_BETWEEN_APPLICATIONS=1
@@ -153,43 +121,48 @@ CHUNK_SIZE=5
 DELAY_BETWEEN_CHUNKS=0.5
 ```
 
-### Parameters
+Adjust these values to optimize performance for your specific VDI environment.
 
-- `WINDOW_TITLE`: The title of the target window where the data will be sent.
-- `DELAY_BETWEEN_KEYS`: The delay (in seconds) between sending each key.
-- `DELAY_BETWEEN_COMMANDS`: The delay (in seconds) between sending each command.
-- `DELAY_BETWEEN_APPLICATIONS`: The delay (in seconds) between opening applications.
-- `NOTEPAD_LOAD_TIME`: The time (in seconds) to wait for Notepad to load.
-- `EXCEL_LOAD_TIME`: The time (in seconds) to wait for Excel to load.
-- `VSCODE_LOAD_TIME`: The time (in seconds) to wait for Visual Studio Code to load.
-- `CHUNK_SIZE`: The number of characters to send at a time.
-- `DELAY_BETWEEN_CHUNKS`: The delay (in seconds) between sending chunks of characters.
+## Developer Guide
 
-## Developer Information
+### Architecture
 
-### Setup and Installation
+The script follows a modular design with separate functions for each major operation:
 
-Refer to the [Installation](#installation) section for setting up the environment. Ensure you have Python 3, `xdotool`, and the required Python libraries installed.
+1. Window management (finding, activating)
+2. Input simulation (keystrokes, clipboard operations)
+3. Application-specific actions (opening Notepad, Excel, VS Code)
+4. Data processing (chunking, encoding)
 
-### Explanation of Focus Requirement
+### Key Components
 
-The target window must stay in focus during the operation to ensure that the keystrokes are correctly sent to the intended window. Losing focus can result in keystrokes being sent to the wrong window, causing unintended behavior. This is particularly crucial for applications like Excel or Notepad, where precise input is required.
+- `find_window_id()`: Locates the target window
+- `send_command_to_window()`: Sends xdotool commands to the window
+- `send_text_to_window()`: Handles text input, including special characters
+- `send_line_spreadsheet()`: Manages spreadsheet data input
+- `send_image()`: Processes and transfers image data
 
-### Platform Compatibility
+### Contributing
 
-This script is designed to work on Linux systems using `xdotool`. It will not work on Windows systems due to the lack of support for `xdotool`. To make it work on Windows, you would need to use equivalent tools or libraries such as `pywin32` or `ctypes` to interact with windows and send keystrokes.
+1. Fork the repository
+2. Create a feature branch: `git checkout -b new-feature`
+3. Commit your changes: `git commit -am 'Add new feature'`
+4. Push to the branch: `git push origin new-feature`
+5. Submit a pull request
 
-## Potential Enhancements
+Please ensure your code adheres to the existing style and includes appropriate tests and documentation.
 
-- **Windows Support**: Implementing the functionality using Windows-specific libraries to send keystrokes and interact with windows.
-- **MacOS Support**: Using `osascript` or other macOS-specific tools to achieve similar functionality.
-- **Error Handling**: Improving error handling and recovery mechanisms for better resilience during execution.
+## Troubleshooting
 
-## Contributing
+- **Window not found**: Verify the window title in your `.env` file matches exactly
+- **Slow performance**: Adjust delay settings in the `.env` file
+- **Incomplete transfers**: Increase `CHUNK_SIZE` for larger data transfers
+- **Unexpected behavior**: Enable debug logging with `-d` for detailed execution information
 
-Contributions are welcome to extend the functionality to other operating systems and improve error handling. If you have expertise in Windows or macOS automation, your input would be invaluable.
+## License
 
----
+This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
 
-By following this documentation, you can set up and use the VDI Data Transfer Script effectively, whether you are a user or a developer looking to enhance the tool.
-```
+## Contact
+
+For support or inquiries, please open an issue on the GitHub repository or contact the maintainer at maintainer@example.com.
