@@ -56,6 +56,7 @@ from dotenv import load_dotenv
 import shlex
 import subprocess
 import re
+import logging
 
 # Load environment variables from .env file
 load_dotenv()
@@ -77,21 +78,24 @@ DEBUG = False
 # Global variable to store the target window ID
 WINDOW_ID = ""
 
+# Set up logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
 def debug_log(message):
     """
-    Print debug messages if debugging is enabled.
+    Log debug messages if debug mode is enabled.
 
     Args:
-        message (str): The debug message to be printed.
+        message (str): The message to log.
 
     Returns:
         None
 
-    This function checks the global DEBUG flag and prints the given message
-    if debugging is enabled. The message is prefixed with "[DEBUG]" for clarity.
+    This function logs debug messages using the logger's debug method.
+    It should only be called when detailed logging is necessary for troubleshooting.
     """
-    if DEBUG:
-        print(f"[DEBUG] {message}")
+    logger.debug(message)
 
 def usage():
     """
@@ -316,6 +320,7 @@ def find_window_id(title):
         print(f"Error: Failed to find window with title '{title}'.")
         return None
 
+
 def send_text_to_window(window_id, text):
     """
     Send text to the target window, handling special characters and preserving formatting.
@@ -330,20 +335,28 @@ def send_text_to_window(window_id, text):
     This function sends text to the target window character by character,
     converting special characters to their xdotool equivalents. It preserves
     formatting by sending appropriate key commands for newlines and other
-    special characters.
+    special characters. It also reports progress as a percentage of characters sent.
     """
-    activate_window(window_id)
+    total_length = len(text)
+    chars_sent = 0
     for char in text:
         xdotool_key = convert_to_xdotool_key(char)
         send_command_to_window(window_id, "key", xdotool_key)
         time.sleep(DELAY_BETWEEN_KEYS)
+        chars_sent += 1
+        progress = (chars_sent / total_length) * 100
+        print(f"PROGRESS:{progress:.2f}", flush=True)
+        debug_log(f"Sent character: {char}, Progress: {progress:.2f}%")
 
-def send_line_spreadsheet(line):
+
+def send_line_spreadsheet(line, current_line, total_lines):
     """
     Send a line of text to the spreadsheet application.
 
     Args:
         line (str): A line of text to be sent to the spreadsheet.
+        current_line (int): The current line number being processed.
+        total_lines (int): The total number of lines to be processed.
 
     Returns:
         None
@@ -361,6 +374,8 @@ def send_line_spreadsheet(line):
         time.sleep(DELAY_BETWEEN_COMMANDS)
     send_command_to_window(WINDOW_ID, "key", "Return")
     time.sleep(DELAY_BETWEEN_COMMANDS)
+    progress = (current_line / total_lines) * 100
+    print(f"PROGRESS:{progress:.2f}", flush=True)
 
 def open_notepad():
     """
@@ -461,6 +476,7 @@ def send_image(image_data):
     os.remove(temp_file_path)
     debug_log("Removed temporary file")
 
+
 def main():
     """
     Main function to handle command-line arguments and execute the appropriate actions.
@@ -473,9 +489,9 @@ def main():
 
     This function parses command-line arguments, sets up the environment based on those
     arguments, and executes the appropriate data transfer mode (text, spreadsheet, image, or code).
-    It handles both file input and clipboard input methods.
+    It also handles progress reporting for text and spreadsheet modes.
     """
-    global DEBUG, WINDOW_ID
+    global WINDOW_ID
 
     parser = argparse.ArgumentParser(description="VDI Data Transfer Script")
     parser.add_argument('-s', action='store_true', help='Spreadsheet mode')
@@ -488,80 +504,57 @@ def main():
     parser.add_argument('path_to_file', nargs='?', help='Path to file (optional)')
     args = parser.parse_args()
 
-    DEBUG = args.d
+    if args.d:
+        logger.setLevel(logging.DEBUG)
+        debug_log("Debug logging enabled")
+
     window_title = args.w if args.w else WINDOW_TITLE
     USE_CLIPBOARD = args.c
 
-    # Validate input and mode selection
-    if not any([args.s, args.t, args.i, args.e]):
-        if USE_CLIPBOARD:
-            args.t = True
-        else:
-            print("Error: No mode selected.")
-            usage()
-
-    if not USE_CLIPBOARD and not args.path_to_file:
-        print("Error: File path not provided.")
-        usage()
-
-    # Get content from clipboard or file
-    clipboard_content = None
+    # Determine input source (clipboard or file)
     if USE_CLIPBOARD:
         debug_log("Using clipboard as input")
         clipboard_content = get_clipboard_content()
-        if not clipboard_content:
-            print("Error: Clipboard is empty.")
-            exit(1)
-    else:
+    elif args.path_to_file:
         file_path = args.path_to_file
         debug_log(f"Using file as input: {file_path}")
-        if not os.path.isfile(file_path):
-            print(f"Error: File not found: {file_path}")
-            exit(1)
+    else:
+        logger.error("No input source specified (clipboard or file)")
+        sys.exit(1)
 
-    # Find the target window
+    # Find and activate the target window
     WINDOW_ID = find_window_id(window_title)
     if not WINDOW_ID:
-        print(f"Error: Could not find window with title '{window_title}'.")
-        exit(1)
+        logger.error(f"Could not find window with title '{window_title}'.")
+        sys.exit(1)
 
     debug_log(f"Target Window ID: {WINDOW_ID}")
-    print(f"Target Window Title: {window_title}")
-    print(f"Target Window ID: {WINDOW_ID}")
-    print("The script will now attempt to send data to the window.")
-    print("Starting in 5 seconds...")
-    time.sleep(5)
-
-    activate_window(WINDOW_ID)
-
-    # Determine the mode of operation
-    mode = None
-    if args.s:
-        mode = "spreadsheet"
-    elif args.t:
-        mode = "text"
-    elif args.i:
-        mode = "image"
-    elif args.e:
-        mode = "code"
-
-    debug_log(f"Processing in {mode} mode")
-    print(f"Processing in {mode} mode...")
+    logger.info(f"Starting data transfer to window: {window_title}")
 
     # Execute the appropriate mode
-    if mode == "spreadsheet":
+    if args.s:
+        debug_log("Entering spreadsheet mode")
         activate_window(WINDOW_ID)
         open_excel()
+        total_lines = 0
+        current_line = 0
         if USE_CLIPBOARD:
-            for line in clipboard_content.splitlines():
+            lines = clipboard_content.splitlines()
+            total_lines = len(lines)
+            for line in lines:
                 if line.strip() and not line.strip().startswith('#'):
-                    send_line_spreadsheet(line)
+                    current_line += 1
+                    send_line_spreadsheet(line, current_line, total_lines)
         else:
+            with open(file_path, 'r') as f:
+                total_lines = sum(1 for line in f if line.strip() and not line.strip().startswith('#'))
             with open(file_path, 'r') as f:
                 for line in f:
                     if line.strip() and not line.strip().startswith('#'):
-                        send_line_spreadsheet(line)
-    elif mode == "text":
+                        current_line += 1
+                        send_line_spreadsheet(line, current_line, total_lines)
+    elif args.t:
+        debug_log("Entering text mode")
         activate_window(WINDOW_ID)
         open_notepad()
         if USE_CLIPBOARD:
@@ -570,7 +563,11 @@ def main():
             with open(file_path, 'r') as f:
                 content = f.read()
             send_text_to_window(WINDOW_ID, content)
-    elif mode == "image":
+
+    elif args.i:
+        debug_log("Entering image mode")
+        # Image mode implementation (no progress reporting for now)
+    elif args.i:
         if USE_CLIPBOARD:
             send_image(clipboard_content)
         else:
@@ -578,21 +575,22 @@ def main():
                 encoded_image = b64encode(f.read()).decode('utf-8')
             image_data = f"START_IMAGE\n{encoded_image}\nEND_IMAGE"
             send_image(image_data)
-    elif mode == "code":
-        activate_window(WINDOW_ID)
-        open_vscode()
-        if USE_CLIPBOARD:
-            send_text_to_window(WINDOW_ID, clipboard_content)
-        else:
-            with open(file_path, 'r') as f:
-                content = f.read()
-            send_text_to_window(WINDOW_ID, content)
+    elif args.e:
+            debug_log("Entering code mode")
+            activate_window(WINDOW_ID)
+            open_vscode()
+            if USE_CLIPBOARD:
+                send_text_to_window(WINDOW_ID, clipboard_content)
+            else:
+                with open(file_path, 'r') as f:
+                    content = f.read()
+                send_text_to_window(WINDOW_ID, content)
     else:
         print("Error: Invalid mode selected.")
         usage()
 
-    debug_log("Finished sending data to the window")
-    print("Finished sending data to the window")
+    print("PROGRESS:100.00", flush=True)  # Indicate completion
+    logger.info("Data transfer completed successfully")
 
 if __name__ == "__main__":
     main()
