@@ -1,0 +1,131 @@
+{
+    "applications": {
+        "vscode": {
+            "type": "local",
+            "mode": "code",
+            "WINDOW_TITLE": "Visual Studio Code",
+            "DELAY_BETWEEN_KEYS": 0.05,
+            "DELAY_BETWEEN_COMMANDS": 0.05,
+            "DELAY_BETWEEN_APPLICATIONS": 1,
+            "APP_LOAD_TIME": 3,
+            "CHUNK_SIZE": 10,
+            "DELAY_BETWEEN_CHUNKS": 0.5,
+            "launch_command": "code",
+            "window_match": "Visual Studio Code",
+            "open_steps": [
+                {
+                    "action": "launch_window"
+                },
+                {
+                    "action": "raise_window"
+                }
+            ],
+            "no_payload": false
+        },
+        "excel": {
+            "type": "vdi",
+            "mode": "spreadsheet",
+            "WINDOW_TITLE": "Microsoft Excel - Excel",
+            "DELAY_BETWEEN_KEYS": 0.05,
+            "DELAY_BETWEEN_COMMANDS": 0.05,
+            "DELAY_BETWEEN_APPLICATIONS": 5.0,
+            "APP_LOAD_TIME": 5.0,
+            "CHUNK_SIZE": 10,
+            "DELAY_BETWEEN_CHUNKS": 0.5,
+            "no_payload": false,
+            "open_steps": [
+                {
+                    "action": "key",
+                    "value": "ctrl+Escape"
+                },
+                {
+                    "action": "type",
+                    "value": "excel"
+                },
+                {
+                    "action": "key",
+                    "value": "Return"
+                }
+            ]
+        },
+        "gnome_text_editor": {
+            "type": "local",
+            "mode": "text",
+            "WINDOW_TITLE": "Text Editor",
+            "DELAY_BETWEEN_KEYS": 0.0,
+            "DELAY_BETWEEN_COMMANDS": 0.0,
+            "APP_LOAD_TIME": 1.0,
+            "CHUNK_SIZE": 20,
+            "DELAY_BETWEEN_CHUNKS": 0.0,
+            "launch_command": "setsid gnome-text-editor -s",
+            "window_match": "Text Editor",
+            "no_payload": false,
+            "open_steps": [
+                {
+                    "action": "launch_window",
+                    "value": ""
+                },
+                {
+                    "action": "raise_window",
+                    "value": ""
+                },
+                {
+                    "action": "key",
+                    "value": "ctrl+t"
+                }
+            ]
+        },
+        "vdi - notepad": {
+            "type": "vdi",
+            "mode": "text2",
+            "WINDOW_TITLE": "NextGen VDI - Brave",
+            "DELAY_BETWEEN_KEYS": "0.05",
+            "DELAY_BETWEEN_COMMANDS": "0.05",
+            "DELAY_BETWEEN_APPLICATIONS": "1",
+            "APP_LOAD_TIME": "2",
+            "CHUNK_SIZE": "10",
+            "DELAY_BETWEEN_CHUNKS": "0.5",
+            "open_steps": [
+                {
+                    "action": "key",
+                    "value": "ctrl+Escape"
+                },
+                {
+                    "action": "type",
+                    "value": "notepad"
+                },
+                {
+                    "action": "key",
+                    "value": "Return"
+                }
+            ],
+            "no_payload": "False"
+        },
+        "notepad-42": {
+            "type": "vdi",
+            "mode": "text",
+            "WINDOW_TITLE": "NextGen VDI - Brave",
+            "DELAY_BETWEEN_KEYS": 0.05,
+            "DELAY_BETWEEN_COMMANDS": 0.05,
+            "DELAY_BETWEEN_APPLICATIONS": 1.0,
+            "APP_LOAD_TIME": 2.0,
+            "CHUNK_SIZE": 10,
+            "DELAY_BETWEEN_CHUNKS": 0.5,
+            "no_payload": false,
+            "open_steps": [
+                {
+                    "action": "key",
+                    "value": "ctrl+Escape"
+                },
+                {
+                    "action": "type",
+                    "value": "notepad"
+                },
+                {
+                    "action": "key",
+                    "value": "Return"
+                }
+            ]
+        }
+    }
+}

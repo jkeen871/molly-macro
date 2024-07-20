@@ -1,219 +1,296 @@
-# VDI Data Transfer Script
-
-A Python-based tool for automating data transfer to Virtual Desktop Infrastructure (VDI) environments, now with a graphical user interface.
+# Molly-macro
 
 ## Table of Contents
+1. [Introduction](#introduction)
+2. [Developer Information](#developer-information)
+3. [Installation](#installation)
+4. [User Interface](#user-interface)
+   - [Main Window](#main-window)
+   - [Configuration Selection](#configuration-selection)
+   - [Input Method](#input-method)
+   - [Window Selection](#window-selection)
+   - [Debug Mode](#debug-mode)
+   - [Command Preview](#command-preview)
+   - [Progress Tracking](#progress-tracking)
+   - [Content Viewer](#content-viewer)
+5. [Configuration File (config.json)](#configuration-file-configjson)
+   - [Structure](#structure)
+   - [Application Configuration](#application-configuration)
+   - [Open Steps](#open-steps)
+   - [Example Configuration](#example-configuration)
+6. [How Molly-macro Works](#how-molly-macro-works)
+   - [Command-line Arguments](#command-line-arguments)
+   - [Execution Flow](#execution-flow)
+   - [Window Management](#window-management)
+   - [Data Transfer](#data-transfer)
+7. [Use Cases and Examples](#use-cases-and-examples)
+8. [Linux Compatibility](#linux-compatibility)
+9. [Windows Adaptation](#windows-adaptation)
+10. [Troubleshooting](#troubleshooting)
+11. [Contributing](#contributing)
+12. [License](#license)
 
-- [Overview](#overview)
-- [Features](#features)
-- [Requirements](#requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Command-Line Interface](#command-line-interface)
-    - [Command-Line Options](#command-line-options)
-    - [Examples](#examples)
-  - [Graphical User Interface](#graphical-user-interface)
-- [Configuration](#configuration)
-- [Developer Guide](#developer-guide)
-  - [Architecture](#architecture)
-  - [Key Components](#key-components)
-  - [Contributing](#contributing)
-- [Troubleshooting](#troubleshooting)
-- [License](#license)
-- [Contact](#contact)
+## Introduction
 
-## Overview
+Molly-macro is a sophisticated data transfer tool designed to automate the process of inputting data into various applications. It provides both a graphical user interface for easy operation and a command-line interface for advanced users and automation scenarios. Molly-macro is particularly useful in environments where traditional clipboard operations or file imports are restricted or unavailable.
 
-The VDI Data Transfer Script is designed to streamline the process of transferring data to a Virtual Desktop Infrastructure (VDI) environment. It uses `xdotool` to interact with specified windows on a Linux system, enabling automated input of text, spreadsheet data, images, or code from a local machine to the VDI. The tool now includes both a command-line interface (`paste_to_vdi.py`) and a graphical user interface (`paste_to_vdi_gui.py`) for enhanced usability.
+## Developer Information
 
-## Features
-
-- **Multiple Transfer Modes**:
-  - Text Mode: Send plain text to a target window
-  - Spreadsheet Mode: Input data in a tabular format, simulating spreadsheet entries
-  - Image Mode: Transfer image data by encoding it as text
-  - Code Mode: Send code directly to Visual Studio Code
-- **Clipboard Integration**: Use clipboard contents as input for any mode
-- **Configurable Delays**: Customize timing between actions for optimal performance
-- **Debug Logging**: Detailed logs for troubleshooting and execution monitoring
-- **Graphical User Interface**: Easy-to-use GUI for configuring and executing transfers
-- **Real-time Progress Tracking**: View transfer progress in the GUI
-
-## Requirements
-
-- Python 3.6+
-- xdotool
-- Linux operating system
-- Additional Python packages: tkinter, pyautogui, pyperclip, python-dotenv
+- **Developer:** Jerry Keen
+- **Email:** jkeen871@gmail.com
 
 ## Installation
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/jkeen871/paste_to_vdi.git
-   cd paste_to_vdi
+1. Ensure you have Python 3.6 or later installed on your Linux system.
+2. Clone the Molly-macro repository:
    ```
-
-2. Install xdotool:
-   ```bash
-   sudo apt-get install xdotool
+   git clone https://github.com/yourusername/molly-macro.git
    ```
-
-3. Set up a virtual environment:
-   ```bash
-   python3 -m venv venv
-   source venv/bin/activate
+3. Navigate to the project directory:
    ```
-
-4. Install Python dependencies:
-   ```bash
+   cd molly-macro
+   ```
+4. Install the required dependencies:
+   ```
    pip install -r requirements.txt
    ```
 
-5. Install tkinter if not already available (required for GUI):
-   ```bash
-   sudo apt-get install python3-tk
-   ```
+## User Interface
 
-## Usage
+### Main Window
 
-### Command-Line Interface
+The main window of Molly-macro provides a user-friendly interface for configuring and executing data transfers. It consists of several key components:
 
-Run the script using the following command:
+### Configuration Selection
 
-```bash
-python paste_to_vdi.py [OPTIONS] [FILE]
+- A dropdown menu allows users to select from pre-defined configurations stored in the config.json file.
+- Each configuration represents a set of parameters for a specific application or scenario.
+- Users can edit existing configurations or create new ones using the "Edit Config" button.
+
+### Input Method
+
+- Users can choose between using clipboard content or a file as the data source.
+- A checkbox toggles between these two options.
+- When "Use Clipboard" is unchecked, a file selection field and browse button become available.
+
+### Window Selection
+
+- A dropdown menu lists all currently open windows.
+- Users select the target window for the data transfer.
+- A "Refresh" button updates the list of available windows.
+
+### Debug Mode
+
+- A checkbox enables debug logging for troubleshooting purposes.
+- When enabled, detailed logs are generated during the transfer process.
+
+### Command Preview
+
+- Displays the command that will be executed based on the current settings.
+- Updates in real-time as users modify options.
+
+### Progress Tracking
+
+- A progress bar shows the status of the ongoing transfer.
+- Percentage completion is displayed numerically.
+- The current status (e.g., "Running", "Completed") is shown in a status bar.
+
+### Content Viewer
+
+- A "View Content" button opens a new window displaying the content to be transferred.
+- Supports both clipboard and file content.
+- Content is displayed in a scrollable, formatted text area.
+
+## Configuration File (config.json)
+
+The config.json file is a crucial component of Molly-macro, containing detailed configurations for various applications and scenarios. This file allows users to customize the behavior of Molly-macro for different target applications.
+
+### Structure
+
+The config.json file has the following high-level structure:
+
+```json
+{
+  "applications": {
+    "app_name_1": {
+      // Application-specific configuration
+    },
+    "app_name_2": {
+      // Application-specific configuration
+    }
+    // ... more applications ...
+  }
+}
 ```
 
-#### Command-Line Options
+### Application Configuration
+
+Each application configuration can include the following fields:
+
+- `type` (string): Specifies whether the application is "local" or "vdi" (Virtual Desktop Infrastructure).
+- `mode` (string): Defines the input mode, e.g., "text", "spreadsheet", "code".
+- `WINDOW_TITLE` (string): The title pattern to match for identifying the application window.
+- `DELAY_BETWEEN_KEYS` (float): Time delay (in seconds) between individual keystrokes.
+- `DELAY_BETWEEN_COMMANDS` (float): Time delay (in seconds) between separate commands or actions.
+- `APP_LOAD_TIME` (float): Time (in seconds) to wait for the application to load after launching.
+- `CHUNK_SIZE` (integer): Number of characters to send in each chunk during data transfer.
+- `DELAY_BETWEEN_CHUNKS` (float): Time delay (in seconds) between sending chunks of data.
+- `launch_command` (string, optional): Command to launch the application (for local applications).
+- `window_match` (string): Pattern to match when searching for the application window.
+- `no_payload` (boolean): If true, no data will be sent (useful for applications that only need to be opened).
+
+### Open Steps
+
+The `open_steps` array defines a series of actions to be performed after the application window is found or launched. Each step is an object with the following properties:
+
+- `action` (string): The type of action to perform. Can be "key" (send a keystroke), "type" (type a string), "launch_window" (launch the application), or "raise_window" (bring the window to the foreground).
+- `value` (string): The value associated with the action (e.g., the key to press or the string to type).
+
+### Example Configuration
+
+Here's a detailed example of a configuration for a text editor application:
+
+```json
+{
+  "applications": {
+    "gnome_text_editor": {
+      "type": "local",
+      "mode": "text",
+      "WINDOW_TITLE": "Text Editor",
+      "DELAY_BETWEEN_KEYS": 0.05,
+      "DELAY_BETWEEN_COMMANDS": 0.1,
+      "APP_LOAD_TIME": 3.0,
+      "CHUNK_SIZE": 20,
+      "DELAY_BETWEEN_CHUNKS": 0.2,
+      "launch_command": "gnome-text-editor -s",
+      "window_match": "Text Editor",
+      "no_payload": false,
+      "open_steps": [
+        {
+          "action": "launch_window",
+          "value": ""
+        },
+        {
+          "action": "raise_window",
+          "value": ""
+        },
+        {
+          "action": "key",
+          "value": "ctrl+n"
+        }
+      ]
+    }
+  }
+}
+```
+
+In this example:
+- The application is a local GNOME Text Editor.
+- It operates in text mode.
+- There are specific delays defined for various operations.
+- The application is launched using the `gnome-text-editor -s` command.
+- After launching, it waits 3 seconds for the app to load.
+- The open steps launch the window, bring it to the foreground, and then open a new document (Ctrl+N).
+
+## How Molly-macro Works
+
+Molly-macro operates by simulating keyboard input to transfer data into target applications. It uses a combination of Python scripts and system utilities to achieve this automation.
+
+### Command-line Arguments
+
+The core functionality is implemented in `molly-macro.py`, which accepts several command-line arguments:
 
 - `-s`: Spreadsheet mode
 - `-t`: Text editor mode
-- `-i`: Image transfer mode
-- `-e`: Code editor mode (Visual Studio Code)
-- `-w TITLE`: Specify window title (default: "vdi_window_title - Brave")
+- `-i`: Image transfer mode (placeholder for future implementation)
+- `-e`: Code editor mode
+- `-w <window_id>`: Specify the target window ID
 - `-c`: Use clipboard contents as input
 - `-d`: Enable debug logging
+- `--config <path>`: Path to the JSON configuration file
+- `--config_name <name>`: Name of the configuration to use
+- `--local`: Indicate that this is a local configuration
+- `<path_to_file>`: Path to the input file (when not using clipboard)
 
-#### Examples
+### Execution Flow
 
-1. Send text file contents:
-   ```bash
-   python paste_to_vdi.py -t document.txt
+1. Parse command-line arguments and load the specified configuration from config.json.
+2. Identify or launch the target application window using the `window_match` pattern.
+3. Execute any specified "open steps" to prepare the application.
+4. Read input data from the clipboard or specified file.
+5. Transfer the data to the target window using simulated keystrokes, respecting the `CHUNK_SIZE` and various delay settings.
+6. Report progress and completion status.
+
+### Window Management
+
+Molly-macro uses the `xdotool` utility to interact with windows in the X Window System. It can:
+
+- Search for windows by title or other attributes using the `window_match` pattern.
+- Activate, focus, and raise windows.
+- Send keystrokes to specific windows, adhering to the `DELAY_BETWEEN_KEYS` setting.
+
+### Data Transfer
+
+The data transfer process is chunk-based to handle large volumes of data efficiently:
+
+1. The input is divided into manageable chunks based on the `CHUNK_SIZE` setting.
+2. Each chunk is sent to the target window using simulated keystrokes.
+3. Delays between chunks (`DELAY_BETWEEN_CHUNKS`) and keystrokes (`DELAY_BETWEEN_KEYS`) are applied to accommodate different application behaviors.
+
+## Use Cases and Examples
+
+1. **Transferring spreadsheet data to a VDI environment:**
    ```
-
-2. Input spreadsheet data from clipboard:
-   ```bash
-   python paste_to_vdi.py -s -c
+   python molly-macro.py -s -c --config_name excel_vdi
    ```
+   This command transfers clipboard content to an Excel application in a VDI environment using the "excel_vdi" configuration.
 
-3. Transfer image with custom window title:
-   ```bash
-   python paste_to_vdi.py -i -w "My VDI Window" image.png
+2. **Inputting code into a local IDE:**
    ```
-
-4. Send code to VS Code:
-   ```bash
-   python paste_to_vdi.py -e script.py
+   python molly-macro.py -e --config_name vscode --local /path/to/code.py
    ```
+   This command inputs the contents of `code.py` into a local Visual Studio Code instance, using the settings defined in the "vscode" configuration.
 
-### Graphical User Interface
+3. **Transferring text to a remote text editor:**
+   ```
+   python molly-macro.py -t -w 12345678 --config_name remote_notepad
+   ```
+   This command sends clipboard content to a specific window (ID: 12345678) using the "remote_notepad" configuration.
 
-To launch the GUI, run:
+## Linux Compatibility
 
-```bash
-python paste_to_vdi_gui.py
-```
+Molly-macro is designed specifically for Linux systems due to its reliance on X Window System utilities, particularly `xdotool`. These tools provide low-level access to window management and input simulation, which are crucial for Molly-macro's functionality.
 
-The GUI provides the following features:
+## Windows Adaptation
 
-1. **Mode Selection**: Choose between Text, Spreadsheet, Image, and Code modes.
-2. **File Selection**: Browse and select input files or use clipboard content.
-3. **Window Title**: Specify the target VDI window title.
-4. **Debug Logging**: Enable or disable debug logging.
-5. **Command Preview**: View the generated command before execution.
-6. **Progress Tracking**: Monitor transfer progress with a progress bar and percentage indicator.
-7. **Run/Stop Controls**: Start and stop transfers with dedicated buttons.
+To adapt Molly-macro for Windows, several key changes would be necessary:
 
-To use the GUI:
+1. Replace `xdotool` functionality with Windows-equivalent APIs (e.g., Win32 API or UI Automation).
+2. Modify window management code to use Windows-specific methods for finding, activating, and focusing windows.
+3. Implement an alternative method for simulating keystrokes, possibly using the `SendInput` function or similar Windows APIs.
+4. Adjust the configuration structure in config.json to accommodate Windows-specific parameters and behaviors.
+5. Update file path handling and environment variable usage to align with Windows conventions.
 
-1. Select the desired transfer mode.
-2. Choose a file or enable clipboard usage.
-3. (Optional) Specify a custom window title.
-4. (Optional) Enable debug logging.
-5. Click "Run" to start the transfer.
-6. Monitor progress in the status bar and progress bar.
-7. Use the "Stop" button to terminate the transfer if needed.
-
-## Configuration
-
-Create a `.env` file in the project root to customize script behavior:
-
-```ini
-WINDOW_TITLE=vdi_window_title - Brave
-DELAY_BETWEEN_KEYS=0.05
-DELAY_BETWEEN_COMMANDS=0.2
-DELAY_BETWEEN_APPLICATIONS=1
-NOTEPAD_LOAD_TIME=2
-EXCEL_LOAD_TIME=5
-VSCODE_LOAD_TIME=3
-CHUNK_SIZE=5
-DELAY_BETWEEN_CHUNKS=0.5
-```
-
-Adjust these values to optimize performance for your specific VDI environment. The GUI will use these settings when executing transfers.
-
-## Developer Guide
-
-### Architecture
-
-The project consists of two main components:
-
-1. `paste_to_vdi.py`: The core script that handles data transfer operations.
-2. `paste_to_vdi_gui.py`: A graphical user interface that wraps the functionality of `paste_to_vdi.py`.
-
-Both scripts follow a modular design with separate functions for each major operation:
-
-1. Window management (finding, activating)
-2. Input simulation (keystrokes, clipboard operations)
-3. Application-specific actions (opening Notepad, Excel, VS Code)
-4. Data processing (chunking, encoding)
-
-The GUI script uses threading to prevent UI freezing during transfers and implements a queue-based system for updating progress.
-
-### Key Components
-
-- `find_window_id()`: Locates the target window
-- `send_command_to_window()`: Sends xdotool commands to the window
-- `send_text_to_window()`: Handles text input, including special characters
-- `send_line_spreadsheet()`: Manages spreadsheet data input
-- `send_image()`: Processes and transfers image data
-- `VDIDataTransferGUI`: Main class for the graphical user interface
-- `update_progress()`: Handles real-time progress updates in the GUI
-
-### Contributing
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b new-feature`
-3. Commit your changes: `git commit -am 'Add new feature'`
-4. Push to the branch: `git push origin new-feature`
-5. Submit a pull request
-
-Please ensure your code adheres to the existing style and includes appropriate tests and documentation.
+These changes would require significant refactoring and testing to ensure compatibility and performance on Windows systems.
 
 ## Troubleshooting
 
-- **Window not found**: Verify the window title in your `.env` file matches exactly
-- **Slow performance**: Adjust delay settings in the `.env` file
-- **Incomplete transfers**: Increase `CHUNK_SIZE` for larger data transfers
-- **Unexpected behavior**: Enable debug logging with `-d` for detailed execution information
-- **GUI not responding**: Check the console output for error messages
-- **Progress bar not updating**: Ensure `paste_to_vdi.py` is printing progress updates correctly
+- **Window not found:** Ensure the target application is running and visible. Try refreshing the window list or adjusting the `window_match` pattern in the configuration.
+- **Transfer not starting:** Check that you have the necessary permissions to interact with the target window. Some applications or system settings may prevent automated input.
+- **Incomplete transfers:** Adjust the timing parameters (`DELAY_BETWEEN_KEYS`, `DELAY_BETWEEN_CHUNKS`) in the configuration. Some applications may require longer delays between keystrokes or chunks.
+- **Garbled output:** Verify that the input encoding matches the target application's expectations. You may need to modify the input preprocessing in extreme cases.
+
+## Contributing
+
+Contributions to Molly-macro are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Commit your changes with clear, descriptive messages.
+4. Push your branch and submit a pull request.
+
+Please ensure your code adheres to the project's styling guidelines and includes appropriate documentation and tests.
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for details.
-
-## Contact
-
-For support or inquiries, please open an issue on the GitHub repository or contact the maintainer at jkeen871@gmail.com.
+Molly-macro is released under the MIT License. See the LICENSE file in the repository for full details.
